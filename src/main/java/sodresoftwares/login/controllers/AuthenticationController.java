@@ -11,12 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import sodresoftwares.login.infra.security.TokenService;
-import sodresoftwares.login.model.user.AuthenticationDTO;
-import sodresoftwares.login.model.user.LoginResponseDTO;
-import sodresoftwares.login.model.user.RegisterDTO;
+import sodresoftwares.login.dto.AuthenticationDTO;
+import sodresoftwares.login.dto.LoginResponseDTO;
+import sodresoftwares.login.dto.RegisterDTO;
 import sodresoftwares.login.model.user.User;
 import sodresoftwares.login.repositories.UserRepository;
-
 
 @RestController
 @RequestMapping("auth")	
