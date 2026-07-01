@@ -3,6 +3,7 @@ package sodresoftwares.login.model.user;
 import java.util.Collection;
 import java.util.List;
 
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,13 +13,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Table(name = "users")
 @Entity(name = "users")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @EqualsAndHashCode(of = "id")
 public class User implements UserDetails {
 
@@ -33,14 +33,6 @@ public class User implements UserDetails {
 	private String password;
 	
 	private UserRole role;
-	
-	public User() {}
-	
-	public User(String login, String password, UserRole role) {
-		this.login = login;
-		this.password = password;
-		this.role = role;
-	}
 	
 	public String getLogin() {
 		return login;
@@ -58,7 +50,7 @@ public class User implements UserDetails {
 		return password;
 	}
 
-	@Override 
+	@Override
 	public String getUsername() {
 		return login;
 	}

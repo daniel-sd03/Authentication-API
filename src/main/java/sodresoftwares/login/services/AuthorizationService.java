@@ -13,11 +13,9 @@ import sodresoftwares.login.repositories.UserRepository;
 public class AuthorizationService implements UserDetailsService{
 
 	private UserRepository userRepository;
-	private final PasswordEncoder passwordEncoder;
-	
-	public AuthorizationService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+
+	public AuthorizationService(UserRepository userRepository) {
 		this.userRepository = userRepository;
-		this.passwordEncoder = passwordEncoder;
 	}
 	
 	@Override

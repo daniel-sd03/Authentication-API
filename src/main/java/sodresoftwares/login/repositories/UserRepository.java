@@ -6,4 +6,5 @@ import sodresoftwares.login.model.user.User;
 
 public interface UserRepository extends JpaRepository<User, String> {
     UserDetails findByLogin(String login);
+    boolean existsByLogin(String login);
 }
