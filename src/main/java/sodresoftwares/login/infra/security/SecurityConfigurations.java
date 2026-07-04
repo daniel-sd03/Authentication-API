@@ -19,7 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 public class SecurityConfigurations {
 	
-	private SecurityFilter securityFilter;
+	private final SecurityFilter securityFilter;
 	
 	public SecurityConfigurations(SecurityFilter securityFilter) {
 		this.securityFilter = securityFilter;

@@ -1,6 +1,7 @@
 package sodresoftwares.login.controllers;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,15 +14,12 @@ import sodresoftwares.login.dto.RegisterDTO;
 import sodresoftwares.login.services.AuthenticationService;
 
 @RestController
-@RequestMapping("auth")	
+@RequestMapping("auth")
+@RequiredArgsConstructor
 public class AuthenticationController {
 
 	private final AuthenticationService authenticationService;
 
-	public AuthenticationController(AuthenticationService authenticationService) {
-		this.authenticationService = authenticationService;
-	}
-	
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AuthenticationDTO data) {
 		String token = authenticationService.login(data);

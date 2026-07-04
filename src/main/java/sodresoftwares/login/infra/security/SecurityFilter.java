@@ -2,6 +2,7 @@ package sodresoftwares.login.infra.security;
 
 import java.io.IOException;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,15 +16,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import sodresoftwares.login.repositories.UserRepository;
 
 @Component
+@RequiredArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
 
-	private TokenService tokenService;
-	private UserRepository userRepository;
-
-	public SecurityFilter(TokenService tokenService, UserRepository userRepository) {
-		this.tokenService = tokenService;
-		this.userRepository = userRepository;
-	}
+	private final TokenService tokenService;
+	private final UserRepository userRepository;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
