@@ -24,6 +24,7 @@ public class SecurityConfigurations {
 
 	private final SecurityFilter securityFilter;
 	private final RequestLoggingFilter requestLoggingFilter;
+	 private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -36,17 +37,9 @@ public class SecurityConfigurations {
 						.requestMatchers(HttpMethod.POST, "/home").hasRole("ADMIN")
 						.anyRequest().authenticated()
 				)
-		        .exceptionHandling(exception ->
-		            exception.authenticationEntryPoint((request, response, authException) -> {
-		                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		                response.setContentType("application/json");
-		                response.getWriter().write("""
-		                {
-		                  "error": "Unauthorized"
-		                }
-		                """);
-		            })
-	            )
+				.exceptionHandling(exception ->
+						exception.authenticationEntryPoint(customAuthenticationEntryPoint)
+				)
 				.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
 				.addFilterAfter(requestLoggingFilter, SecurityFilter.class)
 				.build();
