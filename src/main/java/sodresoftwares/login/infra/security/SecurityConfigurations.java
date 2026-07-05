@@ -1,5 +1,6 @@
  package sodresoftwares.login.infra.security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,21 +15,20 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import jakarta.servlet.http.HttpServletResponse;
+import sodresoftwares.login.infra.logging.RequestLoggingFilter;
 
-@Configuration
+ @Configuration
 @EnableWebSecurity
+ @RequiredArgsConstructor
 public class SecurityConfigurations {
-	
+
 	private final SecurityFilter securityFilter;
-	
-	public SecurityConfigurations(SecurityFilter securityFilter) {
-		this.securityFilter = securityFilter;
-	}
-	
+	private final RequestLoggingFilter requestLoggingFilter;
+
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 		return httpSecurity
-				.csrf(csrf -> csrf.disable()) 
+				.csrf(csrf -> csrf.disable())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(authrize -> authrize
 						.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
@@ -36,7 +36,7 @@ public class SecurityConfigurations {
 						.requestMatchers(HttpMethod.POST, "/home").hasRole("ADMIN")
 						.anyRequest().authenticated()
 				)
-		        .exceptionHandling(exception -> 
+		        .exceptionHandling(exception ->
 		            exception.authenticationEntryPoint((request, response, authException) -> {
 		                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		                response.setContentType("application/json");
@@ -48,14 +48,15 @@ public class SecurityConfigurations {
 		            })
 	            )
 				.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+				.addFilterAfter(requestLoggingFilter, SecurityFilter.class)
 				.build();
 	}
-	
+
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
 		return authenticationConfiguration.getAuthenticationManager();
 	}
-	
+
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();

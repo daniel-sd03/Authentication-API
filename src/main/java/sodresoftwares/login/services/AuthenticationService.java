@@ -1,6 +1,8 @@
 package sodresoftwares.login.services;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +19,7 @@ import sodresoftwares.login.repositories.UserRepository;
 import java.util.Objects;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuthenticationService {
@@ -30,12 +33,18 @@ public class AuthenticationService {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        return tokenService.generateToken((User) Objects.requireNonNull(auth.getPrincipal()));
+        User loggedUser = (User) Objects.requireNonNull(auth.getPrincipal());
+
+        MDC.put("userId", loggedUser.getId());
+        log.info("User authenticated successfully");
+
+        return tokenService.generateToken((User) Objects.requireNonNull(loggedUser));
     }
 
     @Transactional
     public void register(RegisterDTO data) {
         if (this.userRepository.existsByLogin(data.login())) {
+            log.warn("Registration failed: login already exists");
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists");
         }
 
@@ -47,6 +56,8 @@ public class AuthenticationService {
                 .role(data.role())
                 .build();
 
-        this.userRepository.save(newUser);
+        User savedUser = userRepository.save(newUser);
+
+        log.info("User registered with role {}", savedUser.getRole());
     }
 }

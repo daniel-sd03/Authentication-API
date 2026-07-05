@@ -1,20 +1,20 @@
 package sodresoftwares.login.infra.security;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import sodresoftwares.login.model.user.User;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 @Service
+@Slf4j
 public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
@@ -27,8 +27,9 @@ public class TokenService {
                     .withSubject(user.getLogin())
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
-        } catch (JWTCreationException exception) {
-            throw new RuntimeException("Error while generating token", exception);
+        } catch (JWTCreationException ex) {
+            log.error("Failed to generate JWT ", ex);
+            throw new RuntimeException("Error while generating token", ex);
         }
     }
 
