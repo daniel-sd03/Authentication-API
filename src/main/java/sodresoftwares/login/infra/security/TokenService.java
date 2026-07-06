@@ -12,6 +12,7 @@ import sodresoftwares.login.model.user.User;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 
 @Service
 @Slf4j
@@ -46,7 +47,7 @@ public class TokenService {
         }
     }
 
-    private Instant genExpirationDate(){
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+    private Instant genExpirationDate() {
+        return Instant.now().plus(2, ChronoUnit.HOURS);
     }
 }
