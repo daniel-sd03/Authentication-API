@@ -9,9 +9,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 import sodresoftwares.login.dto.AuthenticationDTO;
 import sodresoftwares.login.dto.RegisterDTO;
+import sodresoftwares.login.infra.exception.AppException;
 import sodresoftwares.login.infra.security.TokenService;
 import sodresoftwares.login.model.user.User;
 import sodresoftwares.login.repositories.UserRepository;
@@ -45,7 +45,10 @@ public class AuthenticationService {
     public void register(RegisterDTO data) {
         if (this.userRepository.existsByLogin(data.login())) {
             log.warn("Registration failed: login already exists");
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists");
+            throw new AppException(
+                    HttpStatus.CONFLICT,
+                    "USER_ALREADY_EXISTS",
+                    "User already exists");
         }
 
         String encryptedPassword = passwordEncoder.encode(data.password());

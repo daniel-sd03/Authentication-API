@@ -6,12 +6,12 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import sodresoftwares.login.infra.exception.AppException;
 import sodresoftwares.login.model.user.User;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 
 @Service
@@ -30,7 +30,11 @@ public class TokenService {
                     .sign(algorithm);
         } catch (JWTCreationException ex) {
             log.error("Failed to generate JWT ", ex);
-            throw new RuntimeException("Error while generating token", ex);
+            throw new AppException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "TOKEN_GENERATION_ERROR",
+                    "Error while generating authentication token."
+            );
         }
     }
 
