@@ -24,7 +24,8 @@ public class SecurityConfigurations {
 
 	private final SecurityFilter securityFilter;
 	private final RequestLoggingFilter requestLoggingFilter;
-	 private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+	private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+	private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -34,8 +35,12 @@ public class SecurityConfigurations {
 				.authorizeHttpRequests(authrize -> authrize
 						.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
 						.requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+						.requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
 						.requestMatchers(HttpMethod.POST, "/home").hasRole("ADMIN")
 						.anyRequest().authenticated()
+				)
+				.oauth2Login(oauth2 -> oauth2
+						.successHandler(oAuth2AuthenticationSuccessHandler)
 				)
 				.exceptionHandling(exception ->
 						exception.authenticationEntryPoint(customAuthenticationEntryPoint)

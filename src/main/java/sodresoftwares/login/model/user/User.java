@@ -40,6 +40,9 @@ public class User implements UserDetails {
 	@Column(nullable = false)
 	private UserRole role;
 
+	@Column(name = "google_id", unique = true, nullable = true)
+	private String googleId;
+
 	@CreatedDate
 	@Column(name = "created_at", nullable = false, updatable = false)
 	private LocalDateTime createdAt;
